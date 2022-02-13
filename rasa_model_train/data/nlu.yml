@@ -89,3 +89,10 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: ask_for_suggest
+  examples: |
+    - i need help with computers
+    - is there a teacher i can ask for advice?
+    - can you tell me the name of a teacher?
+    - i want to learn to code
