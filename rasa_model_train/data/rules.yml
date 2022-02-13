@@ -11,8 +11,4 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
-
-- rule: Suggest a teacher anytime the user asks for suggestion
-  steps:
-  - intent: ask_for_suggest
-  - action: action_suggest
+  

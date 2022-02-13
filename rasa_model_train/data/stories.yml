@@ -2,12 +2,32 @@ version: "3.0"
 
 stories:
 
-- story: happy path
+# For greetings
+- story: happy path 1
   steps:
   - intent: greet
   - action: utter_greet
   - intent: mood_great
   - action: utter_happy
+  - action: utter_do_you_need_help
+  - intent: affirm
+  - action: action_ask_for_entity
+  - intent: provide_entity
+  - action: action_provide_recommendations
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+- story: happy path 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+  - action: utter_do_you_need_help
+  - intent: deny
+  - action: utter_ill_be_here
+  - action: utter_goodbye
 
 - story: sad path 1
   steps:
@@ -29,10 +49,12 @@ stories:
   - intent: deny
   - action: utter_goodbye
 
-- story: suggester path 1
+- story: student asks for help without entity
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_great
+  - intent: ask_for_help_without_entity
+  - action: action_ask_for_entity
+  - intent: provide_entity
+  - action: action_provide_recommendations
+  - action: utter_did_that_help
+  - intent: affirm
   - action: utter_happy
-  - action: action_suggest

@@ -9,6 +9,8 @@
 
 from typing import Any, Text, Dict, List
 
+from numpy import disp
+
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
@@ -27,15 +29,29 @@ from rasa_sdk.executor import CollectingDispatcher
 #         return []
 
 
-class ActionSuggest(Action):
+class ActionAskForEntity(Action):
 
     def name(self) -> Text:
-        return "action_suggest"
+        return "action_ask_for_entity"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(text="Anish made a suggester!")
+        dispatcher.utter_message(text="I need a few more details before I can proceed. Could you please provide a description of what topic you want assistance on?")
+
+        return []
+
+class ActionProvideReccomendations(Action):
+
+    def name(self) -> Text:
+        return "action_provide_recommendations"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        entities = tracker.latest_message['entities']
+        dispatcher.utter_message(text="I have found some resources for you. {}".format(entities))
 
         return []

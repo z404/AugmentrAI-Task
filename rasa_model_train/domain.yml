@@ -8,7 +8,8 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
-  - ask_for_suggest
+  - ask_for_help_without_entity
+  - provide_entity
 
 responses:
   utter_greet:
@@ -22,17 +23,27 @@ responses:
   - text: "Did that help you?"
 
   utter_happy:
-  - text: "Great, carry on!"
+  - text: "That's amazing!"
 
   utter_goodbye:
-  - text: "Bye"
+  - text: "Goodbye! I hope to see you again soon!"
 
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
+
+  utter_do_you_need_help:
+  - text: "Do you require assistance of a professor?"
+
+  utter_ill_be_here:
+  - text: "Cool, I'll always be here if you ever need any help."
 
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 
 actions:
-  - action_suggest
+  - action_ask_for_entity
+  - action_provide_recommendations
+
+entities:
+  - subject

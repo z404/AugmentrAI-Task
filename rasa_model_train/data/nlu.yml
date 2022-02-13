@@ -43,6 +43,9 @@ nlu:
   examples: |
     - no
     - n
+    - nope
+    - nah
+    - nope, im good
     - never
     - I don't think so
     - don't like that
@@ -58,6 +61,8 @@ nlu:
     - wonderful
     - I am feeling very good
     - I am great
+    - im doing great
+    - im great
     - I am amazing
     - I am going to save the world
     - super stoked
@@ -90,9 +95,23 @@ nlu:
     - am I talking to a bot?
     - am I talking to a human?
 
-- intent: ask_for_suggest
+- intent: ask_for_help_without_entity
   examples: |
-    - i need help with computers
+    - i need help
     - is there a teacher i can ask for advice?
-    - can you tell me the name of a teacher?
-    - i want to learn to code
+    - can you connect me to a teacher?
+    - i want to talk to a teacher
+    - may i please contact a teacher?
+    - i need to talk to a professor
+    - i want a professor's contact details
+
+- intent: provide_entity
+  examples: |
+    - i need help with [Electro-Magneto-Acousto-Mechanics](subject)
+    - is there a teacher that can help me with [Reduced Order Modelling](subject) and [Surface chemistry and sorption processes](subject)
+    - i want someone to teach me [Steel manufacturing and value-added products](subject)
+    - [X-ray microtomography](subject) and [Characterisation](subject)
+    - can you connect me to a professor that is fluent in [Computational Mechanics](subject)
+    - can someone teach me [Wave](subject) theory?
+    - want to learn some [RF MEMS](subject) in the laboratory
+    - I want some help learning [Marine Biology](subject)
