@@ -23,7 +23,7 @@ responses:
   - text: "Did that help you?"
 
   utter_happy:
-  - text: "That's amazing!"
+  - text: "That's amazing! Let me know if you need help!"
 
   utter_goodbye:
   - text: "Goodbye! I hope to see you again soon!"
