@@ -98,6 +98,8 @@ nlu:
 - intent: ask_for_help_without_entity
   examples: |
     - i need help
+    - i want some help
+    - can i get some help?
     - is there a teacher i can ask for advice?
     - can you connect me to a teacher?
     - i want to talk to a teacher

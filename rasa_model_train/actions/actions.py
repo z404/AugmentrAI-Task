@@ -182,6 +182,19 @@ class DocSim_threaded(DocSim):
         self.thread.start()
 
 
+class UtteSadGoodbye(Action):
+
+    def name(self) -> Text:
+        return "utte_sad_goodbye"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message(text="I'm sorry to hear that. I hope I can be of better help next time.")
+
+        return []
+
 class ActionAskForEntity(Action):
 
     def name(self) -> Text:
@@ -197,6 +210,8 @@ class ActionAskForEntity(Action):
 
 class ActionProvideReccomendations(Action):
 
+    about_recommendations = {}
+
     def __init__(self):
         # Initializing document database
         print("----------------INIT----------------")
@@ -206,18 +221,6 @@ class ActionProvideReccomendations(Action):
         prof_collection = professor_database["prof_collection"]
         self.data = [i for i in prof_collection.find({})]
         
-        # TODO: Fix areas of expertise
-        # TODO: Add about
-        # TODO: Fix scraper
-        # self.areas_of_expertise = []
-        # self.about = []
-        # for i in self.data:
-        #     if "about" in i.keys():
-        #         self.about.append(i["about"])
-            
-        #     if "areas_of_expertise" in i.keys():
-        #         self.areas_of_expertise.append(" ".join(i["areas_of_expertise"]))
-
         self.docsim = DocSim()
 
         for i in range(len(self.data)):
@@ -242,12 +245,12 @@ class ActionProvideReccomendations(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
         keyword_lst = [x for i in tracker.latest_message['entities'] if i["entity"] == "subject" and i["confidence_entity"] > 0.2 for x in i["value"].split()]
-        result = self._generate_recommendations(keyword_lst)
+        result = self._generate_recommendations(keyword_lst, tracker.sender_id)
         dispatcher.utter_message(text="I have found some resources for you. {}".format(result))
 
         return []
 
-    def _generate_recommendations(self, keyword_list: list) -> List[Integer]:
+    def _generate_recommendations(self, keyword_list: list, username) -> List[Integer]:
         # Find the top 3 professors with the highest similarity to the query
         # print([i["areas_of_expertise_text"] for i in self.data])
         simprobs = self.docsim.similarity_query(" ".join(keyword_list), [i["areas_of_expertise_text"] for i in self.data])
@@ -258,5 +261,66 @@ class ActionProvideReccomendations(Action):
         for i in range(len(retdata)):
             retdata[i]["similarity"] = simprobs[i]
         
+        retdata = sorted(retdata, key=lambda x: x["similarity"], reverse=True)
+        
+
+        ActionProvideReccomendations.about_recommendations = {username: (retdata[:3], keyword_list)}
+        return retdata[:3]
+
+class ActionProvideReccomendationsAbout(Action):
+
+    def __init__(self):
+        # Initializing document database
+        print("----------------INIT----------------")
+        config = dotenv_values(".env")
+        monclient = pymongo.MongoClient(config["MONGODB_URI"])
+        professor_database = monclient["professor_database"]
+        prof_collection = professor_database["prof_collection"]
+        self.data = [i for i in prof_collection.find({})]
+        
+        self.docsim = DocSim()
+
+        for i in range(len(self.data)):
+            if "about" in self.data[i].keys():
+                self.data[i]["about_text"] = self.data[i]["about"].replace("\n", " ")
+            else: self.data[i]["about_text"] = "None"
+
+            if "areas_of_expertise" in self.data[i].keys():
+                self.data[i]["areas_of_expertise_text"] = " ".join(self.data[i]["areas_of_expertise"])
+            else:
+                self.data[i]["areas_of_expertise_text"] = "None"
+
+        # simprobs = docsim.similarity_query("fluidmechanics", areas_of_expertise)
+        # strings = [areas_of_expertise[i] for i in range(len(simprobs)) if simprobs[i] > 0.5]
+        # print(strings)
+
+    def name(self) -> Text:
+        return "action_provide_recommendations_about"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        # keyword_lst = [x for i in tracker.latest_message['entities'] if i["entity"] == "subject" and i["confidence_entity"] > 0.2 for x in i["value"].split()]
+        # result = self._generate_recommendations(keyword_lst)
+        userdetails = ActionProvideReccomendations.about_recommendations[tracker.sender_id]
+        result = self._generate_recommendations(userdetails[1], userdetails[0])
+        dispatcher.utter_message(text="These are extra resources i found for you. {}".format(result))
+
+        return []
+
+    def _generate_recommendations(self, keyword_list: list, prev_recommendations) -> List[Integer]:
+        # Find the top 3 professors with the highest similarity to the query
+        # print([i["areas_of_expertise_text"] for i in self.data])
+
+        simprobs = self.docsim.similarity_query(" ".join(keyword_list), [i["about_text"] for i in self.data])
+        
+        retdata = self.data.copy()
+
+        #sort by similarity
+        for i in range(len(retdata)):
+            retdata[i]["similarity"] = simprobs[i]
+        
+        retdata = [i for i in retdata if i["_id"] not in [x["_id"] for x in prev_recommendations]]
         retdata = sorted(retdata, key=lambda x: x["similarity"], reverse=True)
         return retdata[:3]

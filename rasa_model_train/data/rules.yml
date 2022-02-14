@@ -6,9 +6,24 @@ rules:
   steps:
   - intent: goodbye
   - action: utter_goodbye
+  - action: action_restart
 
 - rule: Say 'I am a bot' anytime the user challenges
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+  - action: action_restart
+
+- rule: Comfort user whenever they are sad
+  steps:
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+
+- rule: Please take no as an answer
+  steps:
+  - action: action_provide_recommendations
+  - action: utter_did_that_help
+  - intent: deny
+  - action: action_provide_recommendations_about
   

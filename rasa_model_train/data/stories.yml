@@ -16,6 +16,7 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
+  - action: action_restart
 
 - story: happy path 2
   steps:
@@ -27,6 +28,7 @@ stories:
   - intent: deny
   - action: utter_ill_be_here
   - action: utter_goodbye
+  - action: action_restart
 
 - story: sad path 1
   steps:
@@ -37,6 +39,7 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
+  - action: action_restart
 
 - story: sad path 2
   steps:
@@ -46,7 +49,8 @@ stories:
   - action: utter_cheer_up
   - action: utter_did_that_help
   - intent: deny
-  - action: utter_goodbye
+  - action: utte_sad_goodbye
+  - action: action_restart
 
 - story: student asks for help without entity
   steps:
@@ -57,6 +61,7 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
+  - action: action_restart
 
 - story: student asks for help with entity
   steps:
@@ -65,3 +70,16 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
+  - action: action_restart
+
+# - story: student asks for help with entity denied
+#   steps:
+#   - intent: provide_entity
+#   - action: action_provide_recommendations
+#   - action: utter_did_that_help
+#   - action: action_listen
+#   - intent: deny
+#   - action: action_provide_recommendations_about
+#   - action: utter_did_that_help
+#   - intent: affirm
+#   - action: action_restart

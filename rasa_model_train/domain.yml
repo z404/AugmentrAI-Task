@@ -44,6 +44,8 @@ session_config:
 actions:
   - action_ask_for_entity
   - action_provide_recommendations
+  - action_provide_recommendations_about
+  - utte_sad_goodbye
 
 entities:
   - subject
