@@ -58,3 +58,11 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
+
+- story: student asks for help with entity
+  steps:
+  - intent: provide_entity
+  - action: action_provide_recommendations
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy

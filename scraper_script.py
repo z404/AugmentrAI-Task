@@ -115,6 +115,11 @@ class ScraperScript:
         else:
             self.write_to_mongo(jsonlist)
         
+    def get_database_as_json(self) -> dict:
+        self.professor_database = self.monclient["professor_database"]
+        self.prof_collection = self.professor_database["prof_collection"]
+        return [i for i in self.prof_collection.find({})]
+
 
 if __name__ == "__main__":
     scraper = ScraperScript(testing=True)
