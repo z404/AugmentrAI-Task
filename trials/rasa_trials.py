@@ -2,11 +2,11 @@ from textwrap import indent
 import requests
 import json
 
-rasa_url = "http://localhost:8080"
+rasa_url = "http://localhost:5005"
 
 #testing message endpoint
 endpoint = "/webhooks/rest/webhook"
-args = {"sender":"anish","message":"yes, thank you"}
+args = {"sender":"anish","message":"i need help with wave and tidal turbines"}
 print(requests.post(rasa_url+endpoint, json=args).content)
 
 #getting conversation
