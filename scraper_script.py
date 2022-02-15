@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 from multiprocessing.pool import ThreadPool
 import json
 import pymongo
-from dotenv import dotenv_values
+import os
 
 
 class ScraperScript:
@@ -16,7 +16,7 @@ class ScraperScript:
         req = Request("https://www.swansea.ac.uk/staff/engineering/#associate-professors=is-expanded&lecturers-and-tutors=is-expanded&professors=is-expanded&readers=is-expanded&senior-lecturers=is-expanded")
         html_page = urlopen(req)
         self.soup = BeautifulSoup(html_page, "lxml")
-        config = dotenv_values(".env")
+        config = {'MONGODB_URI':os.environ.get('MONGODB_URI')}
         self.monclient = pymongo.MongoClient(config["MONGODB_URI"])
         self.testing = testing
 

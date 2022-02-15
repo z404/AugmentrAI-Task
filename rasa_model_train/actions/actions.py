@@ -15,7 +15,6 @@ from sqlalchemy import Integer
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 import pymongo
-from dotenv import dotenv_values
 import os
 
 from re import sub
@@ -215,7 +214,7 @@ class ActionProvideReccomendations(Action):
     def __init__(self):
         # Initializing document database
         print("----------------INIT----------------")
-        config = dotenv_values(".env")
+        config = {'MONGODB_URI':os.environ.get('MONGODB_URI')}
         monclient = pymongo.MongoClient(config["MONGODB_URI"])
         professor_database = monclient["professor_database"]
         prof_collection = professor_database["prof_collection"]

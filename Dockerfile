@@ -6,7 +6,7 @@ RUN apt-get install -y -qq python3-pip
 COPY ./rasa_model_train/ /build/
 COPY requirements.txt /build/
 COPY runscript.sh /build/
-COPY .env /build/
+# COPY .env /build/
 
 WORKDIR /build
 
