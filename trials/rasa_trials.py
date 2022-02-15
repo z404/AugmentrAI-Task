@@ -25,7 +25,11 @@ while True:
         "message": message
     }
     response = requests.post(rasa_url + endpoint, json=payload)
-    print(indent(json.dumps(response.text), "    "))
+    for i in response.json():
+        if i['text'] != "":
+            print(i['text'])
+        else:
+            print("The bot did not reply")
 
 #getting conversation
 # endpoint = "/conversations/anish/tracker"

@@ -246,7 +246,13 @@ class ActionProvideReccomendations(Action):
         
         keyword_lst = [x for i in tracker.latest_message['entities'] if i["entity"] == "subject" and i["confidence_entity"] > 0.2 for x in i["value"].split()]
         result = self._generate_recommendations(keyword_lst, tracker.sender_id)
-        dispatcher.utter_message(text="I have found some resources for you. {}".format(result))
+
+        output_string = "I think " + result[0]["name"] + " can help you out! You can check out their profile at "+ result[0]["link"] + " or contact them directly at "\
+             + result[0]['contact_details']["email"] + " (email) or " + result[0]['contact_details']["phone"] + " (phone). "
+        
+        output_string += "Alternatively, you can check out the following professors: " + ", ".join([i["name"]+" ("+i["link"]+")" for i in result[1:]]) + "."
+
+        dispatcher.utter_message(text="I have found some resources for you. {}".format(output_string))
 
         return []
 
@@ -305,7 +311,12 @@ class ActionProvideReccomendationsAbout(Action):
         # result = self._generate_recommendations(keyword_lst)
         userdetails = ActionProvideReccomendations.about_recommendations[tracker.sender_id]
         result = self._generate_recommendations(userdetails[1], userdetails[0])
-        dispatcher.utter_message(text="These are extra resources i found for you. {}".format(result))
+
+        outputtext = "Sorry that I couldn't be of more help. I thought of more recommendations for you, judging by thier about section. "
+        outputtext += "Here are 3 more professors that might be of interest to you: " + ", ".join([i["name"]+" ("+i["link"]+")" for i in result]) + ". "
+        outputtext += "Hopefully, these suggestions are more useful. Thank you for your patience, I'll see you next time!."
+
+        dispatcher.utter_message(text="These are extra resources i found for you. {}".format(outputtext))
 
         return []
 
