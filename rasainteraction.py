@@ -40,11 +40,12 @@ while True:
     }
     response = requests.post(rasa_url + endpoint, json=payload)
     try:
-        for i in response.json():
-            if i['text'] != "":
-                print(Fore.WHITE + i['text'])
-            else:
-                print(Fore.RED + "The bot did not reply")
+        if response.json() != []:
+            for i in response.json():
+                if i['text'] != "":
+                    print(Fore.WHITE + i['text'])
+        else:
+            print(Fore.RED + "The bot did not reply")
     except Exception as e:
         print(Fore.RED + "Oh no, something went wrong! Error: " + str(e))
         print("response: " + str(response.json()))

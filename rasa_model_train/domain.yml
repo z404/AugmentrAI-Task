@@ -10,6 +10,7 @@ intents:
   - bot_challenge
   - ask_for_help_without_entity
   - provide_entity
+  - find_prof
 
 responses:
   utter_greet:
@@ -49,6 +50,8 @@ actions:
   - action_provide_recommendations
   - action_provide_recommendations_about
   - utte_sad_goodbye
+  - action_give_prof_contact
 
 entities:
   - subject
+  - professor

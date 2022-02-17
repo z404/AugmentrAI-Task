@@ -117,3 +117,11 @@ nlu:
     - can someone teach me [Wave](subject) theory?
     - want to learn some [RF MEMS](subject) in the laboratory
     - I want some help learning [Marine Biology](subject)
+
+- intent: find_prof
+  examples: |
+    - Can you tell me about [Professor Ian Masters](professor)?
+    - How do I contact [Dr Mark Cross](professor)?
+    - I need to contact [Dr Nathan Cooze](professor)
+    - I want to know more about [Professor James Sullivan](professor)
+    - Who is [Professor John Smith](professor)?

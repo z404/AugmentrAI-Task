@@ -26,4 +26,9 @@ rules:
   - action: utter_did_that_help
   - intent: deny
   - action: action_provide_recommendations_about
+
+- rule: Reply with contact details when asked about professor
+  steps:
+  - intent: find_prof
+  - action: action_give_prof_contact
   

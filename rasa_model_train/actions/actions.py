@@ -16,6 +16,7 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 import pymongo
 import os
+from dotenv import dotenv_values
 
 from re import sub
 import threading
@@ -209,17 +210,19 @@ class ActionAskForEntity(Action):
 
 class ActionProvideReccomendations(Action):
 
+    data = []
+
     about_recommendations = {}
 
     def __init__(self):
         # Initializing document database
         print("----------------INIT----------------")
-        config = {'MONGODB_URI':os.environ.get('MONGODB_URI')}
+        config = dotenv_values(".env")
         monclient = pymongo.MongoClient(config["MONGODB_URI"])
         professor_database = monclient["professor_database"]
         prof_collection = professor_database["prof_collection"]
         self.data = [i for i in prof_collection.find({})]
-        
+        ActionProvideReccomendations.data = self.data
         self.docsim = DocSim()
 
         for i in range(len(self.data)):
@@ -277,12 +280,7 @@ class ActionProvideReccomendationsAbout(Action):
     def __init__(self):
         # Initializing document database
         print("----------------INIT----------------")
-        config = dotenv_values(".env")
-        monclient = pymongo.MongoClient(config["MONGODB_URI"])
-        professor_database = monclient["professor_database"]
-        prof_collection = professor_database["prof_collection"]
-        self.data = [i for i in prof_collection.find({})]
-        
+        self.data = ActionProvideReccomendations.data
         self.docsim = DocSim()
 
         for i in range(len(self.data)):
@@ -334,3 +332,66 @@ class ActionProvideReccomendationsAbout(Action):
         retdata = [i for i in retdata if i["_id"] not in [x["_id"] for x in prev_recommendations]]
         retdata = sorted(retdata, key=lambda x: x["similarity"], reverse=True)
         return retdata[:3]
+
+class ActionGiveProfContact(Action):
+
+    def __init__(self):
+        self.data = ActionProvideReccomendations.data
+        self.names = [i["name"].replace("Professor ", "").replace("Dr ", "") for i in self.data]
+
+    def name(self) -> Text:
+        return "action_give_prof_contact"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        # get name from entities
+        name2 = [x for i in tracker.latest_message['entities'] if i["entity"] == "professor" and i["confidence_entity"] > 0.2 for x in i["value"].split()]
+        name = list(set(name2))
+        if len(name) == 0:
+            dispatcher.utter_message(text="Sorry, I didn't quite catch the name. Can you try framing your sentence in a different way?")
+            return []
+        elif len(name) > 1:
+            namex = " ".join([i for i in reversed(name)])
+            name[0] = " ".join([i for i in name])
+        name = name[0].lower().replace("professor ", "").replace("dr ", "")
+        print(name)
+        # check most similar name using docsim
+        
+        #search for professor in names
+        prof = [i for i in self.data if name in i["name"].lower().replace("professor ", "").replace("dr ", "") or \
+            i["name"].lower().replace("professor ", "").replace("dr ", "") in name]
+        print([i["name"].lower() for i in self.data])
+        if len(prof) == 0:
+            prof = [i for i in self.data if namex in i["name"].lower().replace("professor ", "").replace("dr ", "") or \
+                i["name"].lower().replace("professor ", "").replace("dr ", "") in namex]
+            if len(prof) == 0:
+                dispatcher.utter_message(text="Sorry, I couldn't find any professors with that name. Can you try framing your sentence in a different way?")
+                return []
+            
+        prof = prof[0]
+        contact_string = []
+        if "contact_details" in prof.keys():
+            for i, j in prof["contact_details"].items():
+                contact_string.append(j + " (" + i + ")")
+            contact_string = ", ".join(contact_string)
+            expertise = ""
+            if "areas_of_expertise" in prof.keys():
+                expertise = "Their areas of expertise are in: " + ", ".join(prof["areas_of_expertise"])
+            if expertise == "":
+                dispatcher.utter_message(text="A little bit about " + prof["name"] + ": " + prof["about_text"] + "\nYou can contact them at " + contact_string \
+                    + ". Here is their website: " + prof["link"] + ".")
+            else:
+                dispatcher.utter_message(text="A little bit about " + prof["name"] + ": " + prof["about_text"] + "\n" + expertise + "\nYou can contact them at " + contact_string \
+                    + ". Here is their website: " + prof["link"] + "." )
+        else:
+            expertise = ""
+            if "areas_of_expertise" in prof.keys():
+                expertise = "Their areas of expertise are in: " + ", ".join(prof["areas_of_expertise"])
+            if expertise == "":
+                dispatcher.utter_message(text="A little bit about " + prof["name"] + ": " + prof["about_text"] + "\nHere is their website: " + prof["link"] + ".")
+            else:
+                dispatcher.utter_message(text="A little bit about " + prof["name"] + ": " + prof["about_text"] + "\n" + expertise + \
+                    + ". Here is their website: " + prof["link"] + "." )
+        return []

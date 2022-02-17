@@ -16,7 +16,7 @@ Problem Statement: University Expertise Recommender using Rasa Chatbot
 1. [The Task](#given-task)
 2. [Solution](#solution)
 3. [Installation](#installation)
-
+4. [Capabilities](#capabilities-of-the-bot)
 
 ## Solution
 
@@ -24,7 +24,7 @@ The solution is to create a rasa bot with a knowledge base of all the professors
 
 The scraping of the given website is done by [scaper_script.py](./scraper_script.py). This script can also be imported into other python programs. Passing `testing=True` to the script will scrape the website and store the data in a text file instead of MongoDB.
 
-The stories and actions are defined in [stories.md](./rasa_model_train/data/stories.yml) and [actions.py](./rasa_model_train/actions/actions.py). The rasa pipeline used is defined in [config.yml](./rasa_model_train/config.yml).
+The stories and actions are defined in [stories.md](./rasa_model_train/data/stories.yml) and [actions.py](./rasa_model_train/actions/actions.py). The rasa pipeline used is defined in [config.yml](./rasa_model_train/config.yml). More about the bot can be found in the [capabilities](#capabilities-of-the-bot) section.
 
 To communicate with the bot, one can use `python3 rasainteraction.py <link to rasa api server>` in the root directory of the project. This script works with any rasa bot.
 
@@ -165,5 +165,9 @@ Hit deploy. Heroku will automatically deploy the latest changes to the app. Memo
 
 ## Capabilities of the bot
 
-The bot can greet a user, and ask how they are doing. The bot has relevant stories to handle sad and happy outcomes. The bot asks if the user needs any help, and if the used affirms without providing any information, it will ask for topics on which the bot can recommend relevant professors. The bot then recommends relevant professors based on the topics and on thier areas of expertise. If the user is unhappy with the recommendations, the bot recommends other relevant professors that are based on thier "about" section. The stories restart after each interaction.
+The bot can greet a user, and ask how they are doing. The bot has relevant stories to handle sad and happy outcomes. The bot asks if the user needs any help, and if the used affirms without providing any information, it will ask for topics on which the bot can recommend relevant professors. 
+
+The bot then recommends relevant professors based on the topics and on thier areas of expertise. If the user is unhappy with the recommendations, the bot recommends other relevant professors that are based on thier "about" section. The stories restart after each interaction. 
+
+The bot also has the extra capability of searching for professors by name. Given a professor's name, it can search for the professor and display thier details, their contact details, and their website.
 
