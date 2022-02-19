@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Welcome</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <!-- <script src="{% static 'js/chatscript.js' %}"></script> -->
+</head>
+
+<body>
+    <h1 style="text-align: center;">Welcome to Anish's Rasa Chatbot</h1>
+    <br>
+    <form action="{% url 'chat' %}" method="post">
+        {% csrf_token %}
+        <label for="uname">Enter username:</label><br>
+        <input type="text" id="uname" name="uname"><br>
+        <label for="rasaurl">Enter RASA URL (Optional)</label><br>
+        <input type="text" id="rasaurl" name="rasaurl"><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+
+</html>
