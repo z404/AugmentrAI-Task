@@ -1,18 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Window</title>
+    <form method="post">{% csrf_token %}</form>
+    <link rel="stylesheet" href="{% static 'css/chatwindow.css' %}">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="{% static 'js/chatscript.js' %}"></script>
+    
+    <!-- CSS only -->
+
 </head>
 
-<body>
-    hello!
-    {% for sender, message in chat_history %}
-    <p>{{ sender }}: {{ message }}</p>
-    {% endfor %}
+<body style="height: 95%;">
+
+    <div class="container">
+        <div class="head">
+            <div class="user">
+                <div class="avatar">
+                    <img width="50" height="50" src="{% static 'images/img1.bmp' %}" alt="">
+                </div>
+                <div class="name" id="nametext">Rasa Chatbot</div>
+            </div>
+        </div>
+        <div class="chat_box">
+            <div class="body" id="bodyofchat">
+
+                {% for message_sender, message_text in chat_history %}
+                {% if message_sender == 'bot' %}
+                <div class="incoming">
+                    <div class="bubble">
+                        <p>{{ message_text }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="outgoing">
+                    <div class="bubble lower">
+                        <p>{{ message_text }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+        <div id="scrollintoviewdiv">
+        </div>
+        <script type="text/javascript">
+            var uname = "{{ uname }}";
+            document.getElementById("scrollintoviewdiv").scrollIntoView({ "behavior": "smooth" });
+        </script>
+        </div>
+        
+        </div>
+        <div class="foot">
+        
+            <form action="javascript:submit_post()">
+                <input id="inputtextbox" name="inputtext" type="textarea" class="msg" placeholder="Type a message..." />
+                <button type="submit" style="color: #fff;background-color: #198754;border-color: #198754;font-size: medium;">
+                    Send
+                </button>
+            </form>
+        
+        </div>
+        </div>
 </body>
 
 </html>
