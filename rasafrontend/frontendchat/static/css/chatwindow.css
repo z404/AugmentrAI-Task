@@ -67,6 +67,30 @@ button:hover i {
 	padding: 16px;
 }
 
+.inputbox {
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px;
+	border-top: 1px solid #e0e0e0;
+	font-size: medium;
+	width: 90%;
+}
+
+#submitbutton {
+	padding: 8px;
+	border-top: 1px solid #e0e0e0;
+	font-size: medium;
+	width: 9%;
+	color: #fff;
+	background-color: #198754;
+	border-color: #198754;
+	font-size: medium;
+}
+
+form {
+	width: 100%;
+}
+
 /* head */
 .head {
 	display: flex;

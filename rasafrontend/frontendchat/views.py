@@ -10,9 +10,12 @@ def index(request):
 
 def _get_chat_history(rasaurl, username):
     endpointtracker = "/conversations/"+username+"/tracker"
-    response = requests.get(rasaurl + endpointtracker).json()["events"]
-    response.sort(key=lambda x: x['timestamp'])
-    lst = [(i['event'],i['text']) for i in response if i["event"] == "user" or i["event"] == "bot"]
+    try:
+        response = requests.get(rasaurl + endpointtracker).json()["events"]
+        response.sort(key=lambda x: x['timestamp'])
+        lst = [(i['event'],i['text']) for i in response if i["event"] == "user" or i["event"] == "bot"]
+    except:
+        lst = []
 
     return lst
 
@@ -20,7 +23,7 @@ def chat(request):
     if request.method == 'POST':
         message = dict(request.POST)
         if message['rasaurl'][0] == "":
-            message['rasaurl'][0] = "http://f75e-49-207-210-139.ngrok.io"
+            message['rasaurl'][0] = " http://4ad2-49-207-210-139.ngrok.io"
         if message['uname'][0] == "":
             message['uname'][0] = "test"
         message['rasaurl'][0] = message['rasaurl'][0].rstrip('/')
@@ -73,6 +76,5 @@ def _send_message_to_bot(rasaurl, uname, message):
             reply.append("The bot did not reply")
     except Exception as e:
         reply.append("Oh no, something went wrong! Error: " + str(e))
-        reply.append("response: " + str(response.json()))
     
     return reply
